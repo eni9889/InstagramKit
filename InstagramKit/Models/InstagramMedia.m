@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, copy) NSString *link;
 @property (nonatomic, strong) InstagramComment *caption;
+@property (nonatomic, assign) NSInteger likesCount;
 @property (nonatomic, strong) NSMutableArray *mLikes;
 @property (nonatomic, strong) NSMutableArray *mComments;
 @property (nonatomic, strong) NSMutableArray *mUsersInPhoto;
@@ -70,6 +71,8 @@
             InstagramUser *user = [[InstagramUser alloc] initWithInfo:userInfo];
             [self.mLikes addObject:user];
         }
+        
+        self.likesCount = [info[kLikes][@"count"] integerValue];
         
         self.mComments = [[NSMutableArray alloc] init];
         for (NSDictionary *commentInfo in (info[kComments])[kData]) {
@@ -138,11 +141,6 @@
     return [NSArray arrayWithArray:self.mLikes];
 }
 
-- (NSInteger)likesCount
-{
-    return [self.mLikes count];
-}
-
 - (NSArray *)comments
 {
     return [NSArray arrayWithArray:self.mComments];
@@ -180,6 +178,7 @@
         self.link = [decoder decodeObjectOfClass:[NSString class] forKey:kLink];
         self.caption = [decoder decodeObjectOfClass:[NSString class] forKey:kCaption];
         self.mLikes = [[decoder decodeObjectOfClass:[NSArray class] forKey:kLikes] mutableCopy];
+        self.likesCount = [decoder decodeIntegerForKey:kLikesCount];
         self.mComments = [[decoder decodeObjectOfClass:[NSArray class] forKey:kComments] mutableCopy];
         self.mUsersInPhoto = [[decoder decodeObjectOfClass:[NSArray class] forKey:kUsersInPhoto] mutableCopy];
         self.tags = [decoder decodeObjectOfClass:[NSArray class] forKey:kTags];
@@ -234,6 +233,7 @@
     [encoder encodeObject:self.thumbnailURL forKey:[NSString stringWithFormat:@"%@url",kThumbnail]];
     [encoder encodeCGSize:self.thumbnailFrameSize forKey:[NSString stringWithFormat:@"%@size",kThumbnail]];
     [encoder encodeBool:self.isVideo forKey:kMediaTypeVideo];
+    [encoder encodeInteger:self.likesCount forKey:kLikesCount];
 
     if (!self.isVideo) {
         [encoder encodeObject:self.lowResolutionImageURL forKey:[NSString stringWithFormat:@"%@url",kLowResolution]];
