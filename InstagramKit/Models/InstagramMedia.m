@@ -54,6 +54,20 @@
 
 @end
 
+@implementation InstagramEmbed
+- (id)initWithInfo:(nullable NSDictionary *)info {
+    if (self = [super init]) {
+        
+        double height = [[info objectForKey:@"thumbnail_height"] doubleValue];
+        double width  = [[info objectForKey:@"thumbnail_width"] doubleValue];
+        self.thumbnailSize = CGSizeMake(width, height);
+        
+        self.thumbnailURL = [info objectForKey:@"thumbnail_url"];
+    }
+    return self;
+}
+@end
+
 @implementation InstagramMedia
 
 - (instancetype)initWithInfo:(NSDictionary *)info

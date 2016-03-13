@@ -289,6 +289,20 @@
                       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                           [responseObjects enumerateObjectsUsingBlock:^(NSDictionary * dataDictionary, NSUInteger idx, BOOL *stop) {
                               id modelObject = [[modelClass alloc] initWithInfo:dataDictionary];
+                              NSLog(@"%s: %@", __func__, modelObject);
+                              if ([modelObject isKindOfClass:[InstagramMedia class]])
+                              {
+                                  InstagramMedia *media = (InstagramMedia *)modelObject;
+                                  NSString *embedURLString = [NSString stringWithFormat:@"https://api.instagram.com/oembed/?url=%@", media.link];
+                                  NSData *embedData = [NSData dataWithContentsOfURL:[NSURL URLWithString:embedURLString]];
+                                  NSError *error = nil;
+                                  NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:embedData options:kNilOptions error:&error];
+                                  InstagramEmbed *embed = [[InstagramEmbed alloc] initWithInfo:dictionary];
+                                  media.embed = embed;
+                                  
+                                  NSLog(@"%s: link: %@ dictionary: %@", __func__, media.link, media.embed);
+                              }
+                              
                               [objects addObject:modelObject];
                           }];
                           dispatch_async(dispatch_get_main_queue(), ^{

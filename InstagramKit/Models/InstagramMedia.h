@@ -27,6 +27,13 @@
 @class InstagramComment;
 @class UserInPhoto;
 @class InstagramLocation;
+@class InstagramEmbed;
+
+@interface InstagramEmbed : NSObject
+@property (nonatomic, assign) CGSize thumbnailSize;
+@property (nonatomic, strong) NSString * _Nullable thumbnailURL;
+- (_Nonnull instancetype)initWithInfo:(nullable NSDictionary *)info;
+@end
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -36,6 +43,12 @@ NS_ASSUME_NONNULL_BEGIN
  *  Creator of the Media.
  */
 @property (nonatomic, readonly) InstagramUser *user;
+
+
+/**
+ *  Media Embed Info.
+ */
+@property (nonatomic, strong) InstagramEmbed *embed;
 
 /**
  *  Is Media liked by the authenticated user.
